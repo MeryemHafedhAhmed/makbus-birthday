@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday.exe 💗</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Courier New", monospace;
+      background: #080b12;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    /* TERMINAL */
+
+    #terminal {
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, #10251c, #050807 75%);
+      transition: opacity 1s;
+    }
+
+    .terminal-window {
+      width: min(720px, 100%);
+      border: 1px solid #25ff91;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 35px #00ff8840;
+      background: #080d0b;
+    }
+
+    .terminal-bar {
+      padding: 12px 16px;
+      color: #b9c7c0;
+      background: #19211d;
+      border-bottom: 1px solid #294b38;
+      font-size: 13px;
+    }
+
+    .terminal-content {
+      min-height: 280px;
+      padding: 24px;
+      color: #51ff9a;
+      font-size: clamp(11px, 2.5vw, 15px);
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 17px;
+      background: #51ff9a;
+      vertical-align: middle;
+      animation: blink .8s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* BIRTHDAY SCREEN */
+
+    #birthday {
+      display: none;
+      min-height: 100vh;
+      padding: 35px 18px;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background:
+        radial-gradient(ellipse at top, #66305f, transparent 65%),
+        linear-gradient(135deg, #11152e, #29142f, #101e36);
+      animation: appear 1.2s ease both;
+      position: relative;
+      isolation: isolate;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(15px) scale(.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .eyebrow {
+      color: #ffc4ed;
+      letter-spacing: 3px;
+      font-size: 12px;
+      line-height: 1.8;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0;
+      font-family: Georgia, serif;
+      font-size: clamp(36px, 8vw, 66px);
+      line-height: 1.2;
+      color: #fff0fa;
+      text-shadow: 0 0 28px #ff73ce70;
+    }
+
+    .subtitle {
+      color: #e3d7ed;
+      font-family: Arial, sans-serif;
+      line-height: 1.8;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* CAKE */
+
+    .cake-area {
+      margin: 55px auto 35px;
+      position: relative;
+      width: 240px;
+      height: 170px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .cake {
+      position: relative;
+      width: 190px;
+      height: 100px;
+      border-radius: 12px 12px 22px 22px;
+      background: linear-gradient(#ffb7d9 0 20%, #f46da9 20% 100%);
+      box-shadow: 0 14px 30px #0005, inset 0 -9px #d94e8c;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .cake::before {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: -13px;
+      width: 204px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ffe3ef;
+      box-shadow: inset 0 -5px #ffafd2;
+    }
+
+    .cake::after {
+      content: "✦ ♥ ✦ ♥ ✦";
+      position: absolute;
+      width: 100%;
+      top: 35px;
+      left: 0;
+      color: #fff0f7;
+      font-size: 18px;
+      letter-spacing: 4px;
+    }
+
+    .plate {
+      position: absolute;
+      bottom: -9px;
+      width: 225px;
+      height: 17px;
+      border-radius: 50%;
+      background: #e9dff7;
+      box-shadow: 0 7px 20px #0005;
+    }
+
+    .candles {
+      position: absolute;
+      left: 50%;
+      top: -48px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 22px;
+      z-index: 2;
+    }
+
+    .candle {
+      width: 9px;
+      height: 38px;
+      border-radius: 4px;
+      background: repeating-linear-gradient(
+        135deg, #fff 0 5px, #c9a7ff 5px 10px
+      );
+      position: relative;
+    }
+
+    .flame {
+      position: absolute;
+      left: 0;
+      top: -20px;
+      width: 9px;
+      height: 17px;
+      border-radius: 50% 50% 45% 45%;
+      background: #ffdb69;
+      box-shadow: 0 0 15px #ffb52d, 0 0 28px #ff8b3d;
+      animation: flicker .5s ease-in-out infinite alternate;
+    }
+
+    .flame.off {
+      display: none;
+    }
+
+    @keyframes flicker {
+      from { transform: rotate(-5deg) scale(1); }
+      to { transform: rotate(5deg) scale(.85, 1.1); }
+    }
+
+    @keyframes float {
+      50% { transform: translateY(-7px); }
+    }
+
+    /* BUTTONS */
+
+    .main-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 15px 24px;
+      color: #38132f;
+      background: linear-gradient(135deg, #ffb5dc, #ffd9a8);
+      box-shadow: 0 8px 28px #ff86cb30;
+      font-weight: bold;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .main-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px #ff86cb60;
+    }
+
+    .hint {
+      margin-top: 15px;
+      color: #c8b9d8;
+      font: 13px/1.7 Arial, sans-serif;
+    }
+
+    /* LETTERS */
+
+    .letter {
+      display: none;
+      width: min(480px, 100%);
+      margin-top: 28px;
+      padding: 26px;
+      border: 1px solid #ffffff35;
+      border-radius: 20px;
+      background: #ffffff12;
+      backdrop-filter: blur(10px);
+      animation: appear 1s ease both;
+    }
+
+    .letter h2 {
+      color: #ffd0ec;
+      font: 28px/1.4 Georgia, serif;
+      margin: 12px 0;
+    }
+
+    .letter p {
+      font: 16px/1.9 Arial, sans-serif;
+      color: #fff0fa;
+      white-space: pre-line;
+    }
+
+    #lateMessage {
+      border-color: #ffb5dc70;
+      box-shadow: 0 0 30px #ff86cb16;
+    }
+
+    .heart {
+      display: inline-block;
+      color: #ff9ccc;
+      animation: heartbeat 1s infinite;
+    }
+
+    @keyframes heartbeat {
+      50% { transform: scale(1.25); }
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: #b3a0c3;
+      font: 11px Arial, sans-serif;
+      text-align: center;
+    }
+
+    /* CONFETTI */
+
+    #confetti {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @media (max-width: 480px) {
+      #terminal { padding: 12px; }
+      .terminal-content { padding: 16px; }
+      .letter { padding: 20px; }
+      .eyebrow { letter-spacing: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TERMINAL SCREEN -->
+
+  <section id="terminal">
+    <div class="terminal-window">
+
+      <div class="terminal-bar">
+        <span style="color:#ff7777">●</span>
+        <span style="color:#ffda76">●</span>
+        <span style="color:#68eea3">●</span>
+        &nbsp; birthday.exe — sistem terminali
+      </div>
+
+      <div class="terminal-content">
+        <div id="logs"></div>
+        <span class="cursor" id="cursor"></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BIRTHDAY SCREEN -->
+
+  <main id="birthday">
+
+    <div class="eyebrow">
+      Dünyanın en tatlı insanı için hazırlandı
+    </div>
+
+    <h1>
+      İyi ki Doğdun,<br>
+      <span id="friendName">Makbuşummm</span>! 🎂
+    </h1>
+
+    <p class="subtitle">
+      Bazı insanlar hayatımıza girer ve her şeyi
+      biraz daha güzelleştirir. Sen de benim için
+      öyle insanlardan birisin. 💗
+    </p>
+
+    <div class="cake-area">
+
+      <div class="cake">
+        <div class="candles">
+          <div class="candle">
+            <span class="flame"></span>
+          </div>
+          <div class="candle">
+            <span class="flame"></span>
+          </div>
+          <div class="candle">
+            <span class="flame"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="plate"></div>
+
+    </div>
+
+    <button
+      class="main-button"
+      id="blowButton"
+      onclick="blowCandles()"
+    >
+      ✨ Makbuşummm, bir dilek tut! 💗
+    </button>
+
+    <p class="hint" id="hint">
+      Gözlerini kapat, dileğini tut ve butona bas 🥹
+    </p>
+
+    <!-- FIRST MESSAGE -->
+
+    <section id="letter" class="letter">
+
+      <div style="font-size:38px">💌</div>
+
+      <h2>Canım Makbuşummm...</h2>
+
+      <p id="message"></p>
+
+      <div class="heart" style="font-size:30px">♥</div>
+
+      <p style="font-size:12px;color:#d9c8e8">
+        Sevgiyle ve biraz kodla hazırlandı. 💗
+      </p>
+
+    </section>
+
+    <!-- SECOND MESSAGE: LATE BIRTHDAY APOLOGY -->
+
+    <section id="lateMessage" class="letter">
+
+      <div style="font-size:40px">🥹💗</div>
+
+      <h2>Bir şey daha söylemem lazım...</h2>
+
+      <p id="lateText"></p>
+
+      <div style="font-size:30px">🫶🏻✨💕</div>
+
+      <p style="font-size:13px;color:#e9c9e4">
+        Geç kalmış bir kutlama, ama kocaman bir sevgiyle...
+      </p>
+
+    </section>
+
+    <div class="footer">
+      Birthday.exe · Sevgiyle başarıyla çalıştırıldı. 💗
+    </div>
+
+  </main>
+
+  <canvas id="confetti"></canvas>
+
+  <script>
+    // =========================================
+    // KİŞİSEL MESAJLAR
+    // =========================================
+
+    const friendName = "Makbuşummm";
+
+    const birthdayMessage = `İyi ki doğdun, canım Makbuşummm! 💗🎂
+
+Hayatıma kattığın güzellikler,
+birlikte biriktirdiğimiz anılar
+ve paylaştığımız güzel anlar için
+sana ne kadar teşekkür etsem az.
+
+Umarım yeni yaşın sana
+kalbin kadar güzel günler,
+gerçekleşen hayaller,
+bolca kahkaha ve unutulmaz anılar getirir.
+
+Hayat bazen zorlaşsa bile
+her zaman yüzünü güldürecek
+bir sebebin olsun.
+
+Kendin olmaktan, hayal kurmaktan
+ve içindeki güzelliği dünyaya
+göstermekten hiç vazgeçme.
+
+Her zaman mutlu olmanı,
+gözlerinin hep ışıl ışıl parlamasını
+ve kalbinin hep huzurlu olmasını diliyorum.
+
+İyi ki varsın, iyi ki doğdun.
+Seni kocaman öpüyorum! 🫶🏻💗`;
+
+    const lateBirthdayMessage = `Makbuşummm, bir de doğum gününü geç kutladığım için özür dilerimmm. 🥹💗
+
+Biliyorum, bu mesaj biraz gecikti ama inan ki seni mutlu etmek istemem hiç geçmedi.
+
+Keşke tam gününde yanında olup sana sımsıkı sarılabilseydim. 🥹🫶🏻
+
+Geç kalmış olabilirim ama sana olan güzel dileklerim, sevgim ve senin için istediğim bütün güzellikler hiç eksilmedi.
+
+Umarım yeni yaşında yüzün hep güler, kalbin hep mutlulukla dolar ve hayalini kurduğun her şey birer birer gerçek olur.
+
+İyi ki varsın be Makbuşummm! İyi ki doğmuşsun, iyi ki seni tanımışım. 💗
+
+Biraz geç kaldım ama sevgimden hiçbir şey eksilmedi. Beni affet olur muuu? 🥹🎂💕`;
+
+    document.getElementById("friendName").textContent = friendName;
+    document.getElementById("message").textContent = birthdayMessage;
+    document.getElementById("lateText").textContent = lateBirthdayMessage;
+
+    // =========================================
+    // TERMINAL ANIMATION
+    // =========================================
+
+    const terminalLines = [
+      "> dogum-gunu.exe baslatiliyor...",
+      "> Mutluluk modulleri yukleniyor .... TAMAM",
+      "> Ozel bir insan araniyor .......... BULUNDU",
+      "> Guzel anilar hazirlaniyor ........ TAMAM",
+      "> Gulumseme modulu yukleniyor ...... TAMAM",
+      "> Kalpten gelen mesaj hazirlaniyor .. TAMAM",
+      "> Pasta ve mumlar hazir ............ TAMAM",
+      "",
+      "Birthday.exe successfully executed."
+    ];
+
+    const logs = document.getElementById("logs");
+    const cursor = document.getElementById("cursor");
+    const terminal = document.getElementById("terminal");
+    const birthday = document.getElementById("birthday");
+
+    let lineIndex = 0;
+
+    function typeLine() {
+      if (lineIndex >= terminalLines.length) {
+        cursor.style.display = "none";
+
+        setTimeout(() => {
+          terminal.style.opacity = "0";
+
+          setTimeout(() => {
+            terminal.style.display = "none";
+            birthday.style.display = "flex";
+          }, 1000);
+
+        }, 1200);
+
+        return;
+      }
+
+      const line = terminalLines[lineIndex];
+      const lineElement = document.createElement("div");
+
+      logs.appendChild(lineElement);
+
+      if (line === "") {
+        lineIndex++;
+        setTimeout(typeLine, 300);
+        return;
+      }
+
+      let charIndex = 0;
+
+      function typeCharacter() {
+        lineElement.textContent = line.slice(0, charIndex + 1);
+        charIndex++;
+
+        if (charIndex < line.length) {
+          setTimeout(typeCharacter, 25);
+        } else {
+          lineIndex++;
+          setTimeout(typeLine, 350);
+        }
+      }
+
+      typeCharacter();
+    }
+
+    window.addEventListener("load", () => {
+      setTimeout(typeLine, 600);
+    });
+
+    // =========================================
+    // BLOW OUT THE CANDLES
+    // =========================================
+
+    let celebrated = false;
+
+    function blowCandles() {
+      if (celebrated) return;
+
+      celebrated = true;
+
+      document.querySelectorAll(".flame").forEach(flame => {
+        flame.classList.add("off");
+      });
+
+      document.getElementById("blowButton").style.display = "none";
+
+      document.getElementById("hint").textContent =
+        "Dileğin kabul olsun Makbuşummm! Bütün hayallerin gerçek olsun! ✨";
+
+      launchConfetti();
+
+      // İlk duygusal mesajı göster.
+      setTimeout(() => {
+        const letter = document.getElementById("letter");
+
+        letter.style.display = "block";
+
+        letter.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+        // Bir süre sonra ikinci özür mesajını göster.
+        setTimeout(() => {
+          const lateMessage = document.getElementById("lateMessage");
+
+          lateMessage.style.display = "block";
+
+          lateMessage.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        }, 6500);
+
+      }, 1300);
+    }
+
+    // =========================================
+    // CONFETTI ANIMATION
+    // =========================================
+
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+
+    let pieces = [];
+    let animationId = null;
+
+    function resizeCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function launchConfetti() {
+      const colors = [
+        "#ff91c8",
+        "#ffd166",
+        "#9b8cff",
+        "#72f1b8",
+        "#ffffff",
+        "#ff7979"
+      ];
+
+      pieces = Array.from({ length: 180 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: -20 - Math.random() * window.innerHeight,
+        size: Math.random() * 8 + 4,
+        speed: Math.random() * 4 + 2,
+        drift: Math.random() * 3 - 1.5,
+        rotation: Math.random() * 360,
+        spin: Math.random() * 8 - 4,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      }));
+
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      pieces.forEach(piece => {
+        piece.x += piece.drift;
+        piece.y += piece.speed;
+        piece.rotation += piece.spin;
+
+        ctx.save();
+        ctx.translate(piece.x, piece.y);
+        ctx.rotate(piece.rotation * Math.PI / 180);
+        ctx.fillStyle = piece.color;
+
+        ctx.fillRect(
+          -piece.size / 2,
+          -piece.size / 2,
+          piece.size,
+          piece.size * 0.65
+        );
+
+        ctx.restore();
+      });
+
+      pieces = pieces.filter(
+        piece => piece.y < window.innerHeight + 30
+      );
+
+      if (pieces.length > 0) {
+        animationId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        animationId = null;
+      }
+    }
+  </script>
+
+</body>
+</html>
